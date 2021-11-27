@@ -1,5 +1,5 @@
-./data/
-./key
-./key.pub
-./config/
-./strategy/
+**/data
+/key
+/key.pub
+**/config
+**/strategy
