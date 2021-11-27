@@ -3,7 +3,8 @@ from configuration import configuration
 import ccxt
 import fastparquet
 import pandas
-
+import time
+from datetime import datetime
 class helper:
     def __init__(self):
         pathToConfig = "./config"
@@ -40,16 +41,26 @@ class helper:
         except:
             print("Error")
             return
-        """print all the pairs supported by exchange"""
+        """check if exchange supports fetching OHLCV data"""
+        
+        if exchange.has["fetchOHLCV"] != True:
+            print('{} does not support fetching OHLC data. Please use another exchange'
+            .format(exchange.name))
+            return
+
+        
         exchange.load_markets()
-        print(exchange.symbols)
+        
         pair = input("Crypto Pair: ")
+
+        """check if crypto pair is available on exchange"""
+
+        if pair not in exchange.symbols:
+            print('{} does not support {} crypto pair. Please use another crypto pair'
+            .format(exchange.name, pair))
+            return
         
         timeframe = input("Timeframe('1m', '5m','15m', '30m','1h', '2h', '3h', '4h', '6h', '12h', '1d', '1M', '1y'):\n ")
-
-        print("Exchange :{} \nPair : {}\nTimeframe : {}" .format(exchange, pair, timeframe))
-        print("Downloading data...")
-
         
         """check if timeframe is available on exchange if not return a helpful error"""
         
@@ -57,24 +68,20 @@ class helper:
             print('{} does not support {} timeframe. Please use another timeframe'
             .format(exchange.name, timeframe))
             return
-
-        """check if crypto pair is available on exchange"""
+        since = str(input("Since [YYYY-MM-DD HH:MM]: "))
+        if since == "":
+            since = datetime.now()
+        else:
+            since = datetime.strptime(since, "%Y-%m-%d %H:%M")
         
-        if pair not in exchange.symbols:
-            print('{} does not support {} crypto pair. Please use another crypto pair'
-            .format(exchange.name, pair))
-            return
+        print("Exchange :{} \nPair : {}\nTimeframe : {}" .format(exchange, pair, timeframe))
+        print("Downloading data...")
+        print(datetime.timestamp(since)*1000)
+       
 
-        """check if exchange supports fetching OHLCV data"""
-        
-        if exchange.has["fetchOHLCV"] != True:
-            print('{} does not support fetching OHLC data. Please use another exchange'
-            .format(exchange.name))
-            return
         
         """get data"""
-        
-        data = exchange.fetch_ohlcv(pair, timeframe)
+        data = exchange.fetch_ohlcv(pair, timeframe, since = int(datetime.timestamp(since)*1000))
         
         """save data to parq file"""
         header = ['Timestamp', 'Open', 'High', 'Low', 'Close', 'Volume']
