@@ -24,7 +24,7 @@ def main():
         constants.helper.downloadData()
         main()
     if choice == "9":
-        print("9")
+        constants.helper.fetchMarketSentiment()
     if choice == "10":
         exit()
 

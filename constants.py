@@ -4,6 +4,7 @@ import ccxt
 import fastparquet
 import pandas
 import time
+import requests
 from datetime import datetime
 class helper:
     def __init__(self):
@@ -85,3 +86,35 @@ class helper:
         pairs = pair.split('/')
         fastparquet.write("./data/{}-{}_{}.parq".format(pairs[0],pairs[1], timeframe),pandas.DataFrame(data, columns=header).set_index('Timestamp'), compression='gzip')
         print("Data saved to ./data/{}_{}.parq".format(pair, timeframe))
+
+
+    @staticmethod
+    def ohlcvToHeikinAshi(data):
+        """
+        :param data: OHLCV data
+        :return: Heikin-Ashi data
+        """
+        data = data.copy()
+        data['Open'] = (data['Open'] + data['Close']) / 2
+        data['Close'] = data['Open']
+        data['High'] = data['High']
+        data['Low'] = data['Low']
+        data['Volume'] = data['Volume']
+        return data
+
+    @staticmethod
+    def fetchMarketSentiment():
+        """make api call to fetch market sentiment"""
+        url = "http://https://api.alternative.me/fng/"
+        response = requests.get(url)
+        if response.status_code == 200:
+            print(response.json())
+        else:
+            print("Error")
+        
+        data = response.json()
+        data = data['data']
+        index = data['value']
+        sentiment = data['value_classification']
+        print("Market sentiment: {}".format(sentiment))
+        return index, sentiment
