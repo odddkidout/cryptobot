@@ -1,6 +1,5 @@
-from random import choice
-from constants import *
 import constants
+
 
 def main():
     print(constants.helper.Logo()) 
@@ -23,6 +22,7 @@ def main():
         print("7")
     if choice == "8":
         constants.helper.downloadData()
+        main()
     if choice == "9":
         print("9")
     if choice == "10":

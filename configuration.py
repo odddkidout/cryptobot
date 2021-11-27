@@ -1,7 +1,6 @@
 import json
 import os
-
-from constants import helper
+import constants
 
 class configuration:
     def __init__(self):
@@ -27,7 +26,7 @@ class configuration:
     def makeConfig(self):
         while(self.name.isspace()):
             self.name = input("Enter a name for the configuration: ") 
-        self.strategycode = input(helper.FetchStrategies())    
+        self.strategycode = input(constants.helper.FetchStrategies())    
         self.name = input("Please enter the name of the configuration: ")
         if name.isspace():
             print("Name cannot be empty!")
