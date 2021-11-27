@@ -1,0 +1,20 @@
+{
+    "debugmode": "1",
+    "demomode": "1",
+    "discord": "1",
+    "discord_webhook": "1",
+    "exchangelist": "1",
+    "loggingmode": "1",
+    "name": "1",
+    "pairlist": "1",
+    "path_to_config": "./config/{name}.json",
+    "path_to_log": "./config/log.txt",
+    "signalApiKey": "1",
+    "strategycode": "1",
+    "telegram": "1",
+    "telegram_bot_name": "1",
+    "telegram_bot_token": "1",
+    "telegram_chat_id": "1",
+    "usingApi": "1",
+    "verbosemode": "1"
+}
