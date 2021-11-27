@@ -76,10 +76,7 @@ class helper:
         
         print("Exchange :{} \nPair : {}\nTimeframe : {}" .format(exchange, pair, timeframe))
         print("Downloading data...")
-        print(datetime.timestamp(since)*1000)
-       
-
-        
+            
         """get data"""
         data = exchange.fetch_ohlcv(pair, timeframe, since = int(datetime.timestamp(since)*1000))
         
