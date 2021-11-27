@@ -25,6 +25,8 @@ def main():
         main()
     if choice == "9":
         constants.helper.fetchMarketSentiment()
+        input("\n\nPress enter to go back to Menu")
+        main()
     if choice == "10":
         exit()
 

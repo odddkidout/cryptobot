@@ -4,6 +4,7 @@ import ccxt
 import fastparquet
 import pandas
 import time
+import os
 import requests
 from datetime import datetime
 class helper:
@@ -104,17 +105,15 @@ class helper:
 
     @staticmethod
     def fetchMarketSentiment():
-        """make api call to fetch market sentiment"""
-        url = "http://https://api.alternative.me/fng/"
+        """make a get api call to http://https://api.alternative.me/fng"""
+        url = "https://api.alternative.me/fng"
         response = requests.get(url)
-        if response.status_code == 200:
-            print(response.json())
-        else:
-            print("Error")
-        
         data = response.json()
-        data = data['data']
-        index = data['value']
-        sentiment = data['value_classification']
-        print("Market sentiment: {}".format(sentiment))
-        return index, sentiment
+        data = data['data'][0]
+        os.system('cls' if os.name=='nt' else 'clear')
+        helper.Logo()
+        print("Market sentiments For Today ")
+        print("\nFear Index: {}\nGreed Index: {}".format(data['value'], 100-int(data['value'])))
+        print("\nSentiments:{}".format(data['value_classification']))
+ 
+        return data
