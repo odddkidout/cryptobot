@@ -1,8 +1,8 @@
 import pandas as pd
 import numpy as np
-
-
-def SSLChannels(dataframe, length=10, mode="sma"):
+import asyncio
+@asyncio.coroutine
+async def SSLChannels(dataframe, length=10, mode="sma"):
     """
     Source: https://www.tradingview.com/script/xzIoaIJC-SSL-channel/
     Author: xmatthias
@@ -22,15 +22,35 @@ def SSLChannels(dataframe, length=10, mode="sma"):
     df = dataframe.copy()
 
     if mode == "sma":
-        df["smaHigh"] = df["high"].rolling(length).mean()
-        df["smaLow"] = df["low"].rolling(length).mean()
+        df["smaHigh"] = df["High"].rolling(20).mean()
+        df["smaLow"] = df["Low"].rolling(20).mean()
 
     df["hlv"] = np.where(
-        df["close"] > df["smaHigh"], 1, np.where(df["close"] < df["smaLow"], -1, np.NAN)
+        df["Close"] > df["smaHigh"], 1, np.where(df["Close"] < df["smaLow"], -1, np.NAN)
     )
     df["hlv"] = df["hlv"].ffill()
 
     df["sslDown"] = np.where(df["hlv"] < 0, df["smaHigh"], df["smaLow"])
     df["sslUp"] = np.where(df["hlv"] < 0, df["smaLow"], df["smaHigh"])
-
+    return df
     return df["sslDown"], df["sslUp"]
+@asyncio.coroutine
+async def MovingAverage(dataframe, mode, length=21):
+
+    """return moving average of lenght lenght of different type"""
+
+    if mode > -1 & mode <4:
+        raise ValueError(f"Mode {mode} not supported yet")
+
+    df = dataframe.copy()
+
+    if mode == 0:
+        ma = df["Close"].rolling(length).mean()
+    elif mode == 1:
+        ma = df["Close"].ewm(span=length).mean()
+    elif mode == 2:
+        """smoothed moving average"""
+
+    elif mode == 3:
+        """linear weighted moving average"""
+    return ma

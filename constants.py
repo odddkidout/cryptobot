@@ -39,7 +39,7 @@ class helper:
         
         exchangeinput = input("Exchange[binance]: ")
         try:
-            exchange = getattr(ccxt, exchangeinput)()
+            exchange = getattr(ccxt, exchangeinput)()        
         except:
             print("Error")
             return
@@ -50,7 +50,6 @@ class helper:
             .format(exchange.name))
             return
 
-        
         exchange.load_markets()
         
         pair = input("Crypto Pair: ")
@@ -74,8 +73,12 @@ class helper:
         if since == "":
             since = datetime.now()
         else:
-            since = datetime.strptime(since, "%Y-%m-%d %H:%M")
-        
+            try:
+                since = datetime.strptime(since, '%Y-%m-%d %H:%M')
+            except:
+                print("Error")
+                return
+    
         print("Exchange :{} \nPair : {}\nTimeframe : {}" .format(exchange, pair, timeframe))
         print("Downloading data...")
             
@@ -85,8 +88,10 @@ class helper:
         """save data to parq file"""
         header = ['Timestamp', 'Open', 'High', 'Low', 'Close', 'Volume']
         pairs = pair.split('/')
-        fastparquet.write("./data/{}-{}_{}.parq".format(pairs[0],pairs[1], timeframe),pandas.DataFrame(data, columns=header).set_index('Timestamp'), compression='gzip')
-        print("Data saved to ./data/{}_{}.parq".format(pair, timeframe))
+        data= pandas.DataFrame(data, columns=header).set_index('Timestamp')
+        fastparquet.write("./data/{}-{}_{}.parq".format(pairs[0],pairs[1], timeframe),data, compression='gzip')
+        print("Data saved to ./data/{}-{}_{}.parq".format(pairs[0],pairs[1], timeframe))
+        print(data)
 
 
     @staticmethod
